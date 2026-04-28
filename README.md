@@ -2,23 +2,39 @@
 
 GitHub Pages **user-level root** repo for `https://lsy860224.github.io`.
 
-## 목적
+## ⚠️ Auto-generated content
 
-이 저장소는 단 하나의 역할만 합니다 — **루트 도메인(`lsy860224.github.io`) 접속 시 GentleLab 시리즈 랜딩으로 자동 리다이렉트**.
+이 repo의 파일들은 **`gentlelab-web` (Astro 소스 repo)에서 빌드된 결과물**입니다. 직접 편집하지 마세요.
 
-GitHub Pages 사양상 `<username>.github.io/` 루트에서 페이지를 서비스하려면 같은 이름의 repo가 필요합니다. 이 repo가 없으면 루트는 404가 떠요. 외부 공유·SNS 프로필 링크 등에서 root URL을 자연스럽게 처리하기 위해 만들었습니다.
+- 소스 repo: https://github.com/lsy860224/gentlelab.github.io (`gentlelab-web` 로컬 폴더)
+- 빌드 → 이 repo로 push → GitHub Pages가 root에서 서빙
 
-## 동작
+## 배포 흐름 (현재 — manual)
 
-- `index.html` — `<meta refresh>` + JS 양쪽으로 즉시 `/gentlelab.github.io/`로 이동
-- `404.html` — 존재하지 않는 sub-path도 모두 GentleLab 메인으로 이동
-- `<canonical>` 태그로 SEO는 GentleLab을 가리키고, `noindex,follow`로 검색 결과에 redirect 페이지 자체는 숨김
+```bash
+cd ~/dev/gentlelab-web
+PATH="$HOME/.nvm/versions/node/v22.22.2/bin:$PATH" npm run build
+# 결과: dist/
 
-## 변경
+cd ~/dev/lsy860224.github.io
+rm -rf _astro en gentledo gentlefast gentlestudy images og privacy *.html *.svg *.xml *.txt
+cp -R ~/dev/gentlelab-web/dist/. .
+git add -A && git commit -m "deploy: gentlelab-web YYYY-MM-DD HH:mm" && git push
+```
 
-GentleLab 도메인이 커스텀 도메인(예: `gentlelab.com`)으로 전환되면 `/gentlelab.github.io/`를 새 도메인으로 일괄 치환.
+## 향후 자동화 (TODO)
+
+`gentlelab-web` repo의 GitHub Actions에 cross-repo push 추가:
+- PAT 또는 deploy key를 secret으로 등록
+- workflow가 빌드 후 lsy860224.github.io repo에 push
+- Pages가 자동 재배포
+
+## 히스토리
+
+- **2026-04-28 17:05** — 구조 전환: gentlelab-web 사이트가 `/gentlelab.github.io/` 서브패스에서 `/` 루트로 이동. 절대 경로 버그 (favicon·nav 깨짐) 해결.
+- **2026-04-28 16:42** — 초기 redirect-only 셋업 (현재 폐기, 실제 사이트로 교체)
 
 ## 관련
 
-- GentleLab 시리즈: https://lsy860224.github.io/gentlelab.github.io/
 - 본인 프로필: https://github.com/lsy860224
+- Astro 소스: https://github.com/lsy860224/gentlelab.github.io
